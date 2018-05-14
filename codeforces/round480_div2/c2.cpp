@@ -1,3 +1,6 @@
+// summary:
+//    should use greedy on the correct direction
+//    early or over-strict greedy might cause error
 #include <bits/stdc++.h>
 
 using namespace std;

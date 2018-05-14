@@ -1,3 +1,7 @@
+// After simplifying the number, we can use O(1) to check pair
+// 1. create a prime table first
+// 2. ispair() is redundant, can simplify the computation first
+// 3. special case for a[j] == 0
 #include <bits/stdc++.h>
 #include <math.h>
 
@@ -5,7 +9,7 @@ using namespace std;
 
 const int MAXN = 5005;
 bool f[MAXN][MAXN] = {};
-bool counted[MAXN] = {};
+int counted[MAXN] = {0};
 int tag[MAXN] = {};
 int ans[MAXN] = {0};
 
@@ -26,6 +30,7 @@ bool np[P] = {false};
 
 
 bool ispair(ll u, ll v) {
+  return (u==v);
   if (u == 0 || v == 0) return true;
   if (u == 1 && v == 1) return true;
   if (u == 1 || v == 1) return false;
@@ -56,12 +61,23 @@ int main() {
     }
 
 
-  int n, tmp;
+  ll n, tmp;
   cin >> n;
   vector<ll> a;
 
   for (int i = 0; i < n; ++i) {
     cin >> tmp;
+    bool flag = tmp < 0;
+    if (flag) tmp = -tmp;
+
+    for (int j = 0; j < pset.size(); ++j) {
+      ll k = pset[j];
+      if (k*k > tmp) break;
+      while (tmp % (k*k) == 0)
+        tmp /= (k*k);
+    }
+    if (flag) tmp = -tmp;
+//  cout << tmp << " ";
     a.push_back(tmp);
   }
 
@@ -86,15 +102,21 @@ int main() {
 
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < n; ++j)
-      counted[j] = false;
+      counted[j] = 0;
       
     int length = 0;
     for (int j = i; j < n; ++j) {
-      if (!counted[tag[j]]) {
-        counted[tag[j]] = true;
-        length++;
+      if (a[j]!=0) {
+        counted[tag[j]]++;
+        if (counted[tag[j]] == 1) {
+          length++;
+        }
       }
-      ans[length]++;
+//    if (a[j]!=0 && !counted[tag[j]]) {
+//      counted[tag[j]] = true;
+//      length++;
+//    }
+      ans[max(1, length)]++;
     }
   }
 
